@@ -227,11 +227,17 @@ else {
 			'version',
 			'shortversion',
 			'html4tags',
+			'github',
+			'help',
 		);
 		if ($cli_opts{'version'}) {		# Version info
 			print "\nThis is Markdown, version $VERSION.\n";
 			print "Copyright 2004 John Gruber\n";
 			print "http://daringfireball.net/projects/markdown/\n\n";
+			exit 0;
+		}
+		if ($cli_opts{'help'}) {		# Just the version number string.
+			print "Markdown.pl [--html4tags] [--github] [--version] [-shortversion] [...]\n";
 			exit 0;
 		}
 		if ($cli_opts{'shortversion'}) {		# Just the version number string.
@@ -242,7 +248,6 @@ else {
 			$g_empty_element_suffix = ">";
 		}
 
-
 		#### Process incoming text: ###########################
 		my $text;
 		{
@@ -250,18 +255,23 @@ else {
 			$text = <>;
 		}
 		$text = Markdown($text);
-		$text = '<html>' . $text;
-		$text = '<head>' . $text;
-		$text = '<link href="https://d3nwyuy0nl342s.cloudfront.net/eef8b0c707f02a0f7989e436119b6ea890b73b32/stylesheets/bundle_github.css" media="screen" rel="stylesheet" type="text/css" />' . $text;
-		$text = '</head>' . $text;
-		$text = '<body>' . $text;
-		$text = '<div class="wikistyle" style="margin-left:auto;margin-right:auto;width:60%;">' . $text;
-		$text = $text . '</div>';
-		$text = $text . '</div>';
-		$text = $text . '</div>';
-		$text = $text . '</div>';
-		$text = $text . '</body>';
-		$text = $text . '</html>';
+		
+		#### Add style of github
+		if ($cli_opts{'github'}) {
+			$text = '<html>' . $text;
+			$text = '<head>' . $text;
+			$text = '<link href="https://d3nwyuy0nl342s.cloudfront.net/eef8b0c707f02a0f7989e436119b6ea890b73b32/stylesheets/bundle_github.css" media="screen" rel="stylesheet" type="text/css" />' . $text;
+			$text = '</head>' . $text;
+			$text = '<body>' . $text;
+			$text = '<div class="wikistyle" style="margin-left:auto;margin-right:auto;width:60%;">' . $text;
+			$text = $text . '</div>';
+			$text = $text . '</div>';
+			$text = $text . '</div>';
+			$text = $text . '</div>';
+			$text = $text . '</body>';
+			$text = $text . '</html>';
+		}
+		
         print $text;
     }
 }
@@ -1375,7 +1385,7 @@ B<Markdown>
 
 =head1 SYNOPSIS
 
-B<Markdown.pl> [ B<--html4tags> ] [ B<--version> ] [ B<-shortversion> ]
+B<Markdown.pl> [ B<--html4tags> ] [ B<--github> ] [ B<--version> ] [ B<-shortversion> ]
     [ I<file> ... ]
 
 
@@ -1415,6 +1425,9 @@ instead of Markdown's default XHTML style tags, e.g.:
 
     <br />
 
+=item B<--github>
+
+Output html with github's css.
 
 =item B<-v>, B<--version>
 
